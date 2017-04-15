@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 public class ChatClient extends Frame{
@@ -16,6 +18,10 @@ public class ChatClient extends Frame{
 	TextField taText=new TextField();
 	
 	TextArea taContent=new TextArea();
+	
+	Socket s=null;
+	
+	DataOutputStream dos=null;
 	
 	public static void main(String[] args) {
 		new ChatClient().lanuchFrame();
@@ -32,7 +38,9 @@ public class ChatClient extends Frame{
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
+				disconnect();
 				System.exit(0);
+				
 			}
         	
         });
@@ -43,23 +51,48 @@ public class ChatClient extends Frame{
 	
 	public void connect(){
 		try{
-		Socket s=new Socket("localhost",8888);
+	     s=new Socket("localhost",8888);
+	 	 dos=new DataOutputStream(s.getOutputStream());
+	     //dos=new DataOutputStream(s.getOutputStream());
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
+	
+	public void disconnect(){
+		try {
+			dos.close();
+			s.close();
+		} catch (IOException e) {
+	
+			e.printStackTrace();
+		}
+    }
+	
+	
+	
 	private class TFListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String s=taText.getText().trim();
-			taContent.setText(s);
+			String str=taText.getText().trim();
+			taContent.setText(str);
 			taText.setText("");
-
+			try {
+			
+				dos.writeUTF(str);
+				dos.flush();
+				
+			} catch (IOException e1) {
+			
+				e1.printStackTrace();		
+				
+			}		
 		}
 		
 		
 	}
+	
 
 }
