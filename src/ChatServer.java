@@ -3,6 +3,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 public class ChatServer {
@@ -13,6 +16,8 @@ public class ChatServer {
 	ServerSocket ss=null;
 	boolean isRunning=false;
 	
+	List<Client> clients=new ArrayList<Client>();
+	
 	public static void main(String[] args){ 
 		
 		new ChatServer().start();
@@ -22,7 +27,7 @@ public class ChatServer {
 	
 	public void start(){
 		try {
-			ss=new ServerSocket(8888);
+			ss = new ServerSocket(8888);
 			isRunning=true;
 		}catch(IOException e){
 			e.printStackTrace();
@@ -53,7 +58,7 @@ System.out.println("a client is connect!");
 	class Client implements Runnable{
 		private Socket s;
 		private DataInputStream dis = null;
-		private boolean isConnected=false;
+		private boolean isConnected = false;
 		
 		
 		public Client(Socket s){
@@ -83,7 +88,7 @@ System.out.println("a client is connect!");
 				try {
 						
 					if(dis != null)dis.close();
-					if(s!=null) s.close();
+					if(s != null) s.close();
 				} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
